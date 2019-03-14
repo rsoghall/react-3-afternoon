@@ -6,6 +6,7 @@ import Header from './Header/Header';
 import Compose from './Compose/Compose';
 import Post from '../components/Post/Post.js'
 
+const baseUrl = ('https://practiceapi.devmountain.com/api/')
 class App extends Component {
   constructor() {
     super();
@@ -14,42 +15,51 @@ class App extends Component {
       posts: []
     };
 
-    this.updatePost = this.updatePost.bind( this );
-    this.deletePost = this.deletePost.bind( this );
-    this.createPost = this.createPost.bind( this );
+    
+    
+    
   }
   
   componentDidMount() {
-    axios.get('https://practiceapi.devmountain.com/api/posts')
-    .then((results) => {
-      console.log(results.data)
-      this.setState({posts: results.data})
+    axios.get(`${baseUrl}posts`)
+    .then(res => {
+      console.log(res.data)
+      this.setState({
+        posts: res.data})
     })
+    .catch(err => console.log('error', err))
 
   }
 
-  updatePost(id, text) {
-    axios.put(`https://practiceapi.devmountain.com/api/posts?id=${id}`, {text})
-    .then((results) => {
-      this.setState({post: results.data})
+  updatePost= (id, text) => {
+    axios.put(`${baseUrl}posts?id=${id}`, {text})
+    .then(res => {
+      this.setState({
+        posts: res.data
+      })
     })
+    .catch(err => console.log('error', err))
     
   
   }
 
-  deletePost(id) {
-    axios.delete(`https://practiceapi.devmountain.com/api/posts?id=${id}`)
-    .then(results => {
-      this.setState({posts: results.data})
+  deletePost = (id) => {
+    axios.delete(`${baseUrl}posts?id=${id}`)
+    .then(res => {
+      this.setState({
+        posts: res.data
+      })
     })
+    .catch(err => console.log('error', err))
 
   }
 
-  createPost(text) {
-    axios.post(`https://practiceapi.devmountain.com/api/posts?id=${text}`)
-    .then(results => {
-      this.setState({posts: results.data})
+  createPost = (text) => {
+    axios.post(`${baseUrl}posts`, {text})
+    .then(res => {
+      this.setState({posts: res.data})
     })
+    .catch(err => console.log('error', err))
 
   }
 
@@ -70,11 +80,15 @@ class App extends Component {
 
           {
             posts.map( post => (
-            <Post key={post.id} 
+            <Post 
+            key={post.id}
+            id={post.id} 
             text={post.text}
             date={post.date}
             updatePostFn={this.updatePost}
-            deletePostFn={this.deletePost}/>
+            deletePostFn={this.deletePost}
+            
+            />
           ))
           }
           
